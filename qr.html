@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>طلب طاولة | مطعم الذواق</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', -apple-system, sans-serif;
+        }
+
+        body {
+            background: #121212;
+            color: #ffffff;
+            line-height: 1.5;
+            padding-bottom: 100px;
+        }
+
+        /* Header */
+        .header {
+            background: #1e1e1e;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #333;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .restaurant-logo {
+            width: 50px;
+            height: 50px;
+            background: #2d2d2d;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d48c2c;
+            font-size: 1.5rem;
+        }
+
+        .restaurant-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+
+        .table-info {
+            background: #2d2d2d;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffffff;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            background: #2d2d2d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #d48c2c;
+            color: #000000;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 50%;
+            min-width: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Sticky Categories Bar */
+        .categories-sticky {
+            position: sticky;
+            top: 80px;
+            z-index: 90;
+            background: #1e1e1e;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .categories-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .categories-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-sticky-item {
+            flex: 0 0 auto;
+            width: 100px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .category-sticky-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .category-sticky-item.active .category-sticky-image {
+            border: 3px solid #d48c2c;
+        }
+
+        .category-sticky-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto 0.5rem;
+            border: 2px solid #444;
+            transition: border 0.2s;
+        }
+
+        .category-sticky-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 5%;
+        }
+
+        .item-card {
+            background: #1e1e1e;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #333;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .item-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .item-category-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(212, 140, 44, 0.9);
+            color: #000000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .item-content {
+            padding: 1rem;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .item-price {
+            color: #d48c2c;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .item-desc {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Item Details Page */
+        .item-details-page {
+            min-height: 100vh;
+            background: #121212;
+        }
+
+        .details-header {
+            position: sticky;
+            top: 0;
+            background: #1e1e1e;
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid #333;
+            z-index: 100;
+        }
+
+        .details-header h3 {
+            color: #ffffff;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d2d2d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .details-image {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .details-content {
+            padding: 2rem 5%;
+        }
+
+        .details-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .details-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .details-price {
+            font-size: 2rem;
+            color: #d48c2c;
+            font-weight: 700;
+        }
+
+        .details-category {
+            display: inline-block;
+            background: #2d2d2d;
+            color: #d48c2c;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .details-desc {
+            color: #cccccc;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .details-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            background: #1e1e1e;
+            border-radius: 50px;
+            border: 1px solid #333;
+        }
+
+        .quantity-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: #2d2d2d;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            color: #ffffff;
+        }
+
+        .quantity {
+            font-size: 1.5rem;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-radius: 15px;
+            resize: none;
+            font-size: 1rem;
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .notes-input::placeholder {
+            color: #888888;
+        }
+
+        .add-to-cart-btn {
+            background: #d48c2c;
+            color: #000000;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: #1e1e1e;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            left: 0;
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffffff;
+        }
+
+        .close-cart {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #2d2d2d;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #ffffff;
+        }
+
+        .cart-item-price {
+            color: #d48c2c;
+            font-weight: 600;
+        }
+
+        .cart-item-notes {
+            font-size: 0.8rem;
+            color: #aaaaaa;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-item-actions button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #1e1e1e;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #333;
+            background: #1e1e1e;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: #ffffff;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cart-actions button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #d48c2c;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .btn-outline {
+            background: #2d2d2d;
+            color: #ffffff;
+            border: 1px solid #444;
+        }
+
+        /* Floating Actions */
+        .floating-actions {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 90;
+        }
+
+        .floating-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #1e1e1e;
+            border: 1px solid #444;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-btn.help {
+            background: #2d2d2d;
+            color: #ffffff;
+            border: 1px solid #666;
+        }
+
+        .floating-btn.water {
+            background: #2196f3;
+            color: #ffffff;
+            border: 1px solid #64b5f6;
+        }
+
+        .floating-btn.bill {
+            background: #d48c2c;
+            color: #000000;
+            border: 1px solid #d48c2c;
+        }
+
+        .floating-btn.bill.hidden {
+            display: none;
+        }
+
+        /* Order Status Bar */
+        .order-status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            border-top: 2px solid #d48c2c;
+            padding: 1rem 5%;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+        }
+
+        .order-status-bar.show {
+            display: flex;
+        }
+
+        .order-status-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .order-status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d2d2d;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .order-status-text {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .order-status-time {
+            font-size: 0.9rem;
+            color: #aaaaaa;
+        }
+
+        .order-status-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #444;
+        }
+
+        .progress-dot.active {
+            background: #d48c2c;
+        }
+
+        .progress-dot.completed {
+            background: #10b981;
+        }
+
+        .progress-label {
+            font-size: 0.7rem;
+            color: #aaaaaa;
+        }
+
+        /* Bill Section */
+        .bill-section {
+            background: #1e1e1e;
+            margin: 1rem 5%;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+        }
+
+        .bill-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bill-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #333;
+            color: #ffffff;
+        }
+
+        .bill-item:last-child {
+            border-bottom: none;
+        }
+
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #d48c2c;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+
+        /* Modals */
+        .confirm-modal, .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .confirm-modal.active, .modal.active {
+            display: flex;
+        }
+
+        .confirm-content, .modal-content {
+            background: #1e1e1e;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #444;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            color: #ffffff;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .modal p {
+            color: #cccccc;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Water Modal Specific */
+        .water-options {
+            margin: 1.5rem 0;
+        }
+
+        .water-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #2d2d2d;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            border: 1px solid #444;
+            transition: all 0.2s;
+        }
+
+        .water-option:hover {
+            background: #3d3d3d;
+            border-color: #d48c2c;
+        }
+
+        .water-option.selected {
+            background: #3d3d3d;
+            border: 2px solid #d48c2c;
+        }
+
+        .water-option-icon {
+            width: 40px;
+            height: 40px;
+            background: #1e1e1e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2196f3;
+        }
+
+        .water-option-info {
+            flex: 1;
+        }
+
+        .water-option-title {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .water-option-desc {
+            font-size: 0.8rem;
+            color: #aaaaaa;
+        }
+
+        .water-quantity {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .water-quantity-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .water-quantity-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e1e1e;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 2000;
+            border: 1px solid #444;
+            color: #ffffff;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast i {
+            color: #10b981;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #aaaaaa;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .items-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        #cartItems p {
+            color: #aaaaaa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main App -->
+    <div id="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="restaurant-info">
+                <div class="restaurant-logo">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div>
+                    <div class="restaurant-name" id="restaurantName">مطعم الذواق</div>
+                    <div class="table-info" id="tableInfo">
+                        <i class="fas fa-chair"></i>
+                        <span>طاولة 5</span>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-icon" onclick="openCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+
+        <!-- Sticky Categories Bar -->
+        <div class="categories-sticky" id="categoriesSticky">
+            <div class="categories-scroll" id="categoriesScroll"></div>
+        </div>
+
+        <!-- Items Grid -->
+        <div class="items-grid" id="itemsGrid">
+            <div class="loading">جاري تحميل المنيو...</div>
+        </div>
+
+        <!-- Bill Section (تظهر بعد إرسال الطلب) -->
+        <div class="bill-section" id="billSection" style="display: none;">
+            <div class="bill-title">
+                <i class="fas fa-receipt"></i>
+                فاتورة الطلب #<span id="billOrderId"></span>
+            </div>
+            <div id="billItems"></div>
+            <div class="bill-total" id="billTotal"></div>
+        </div>
+
+        <!-- Floating Actions -->
+        <div class="floating-actions">
+            <button class="floating-btn help" onclick="callWaiter()" id="waiterBtn">
+                <i class="fas fa-hand-paper"></i>
+            </button>
+            <button class="floating-btn water" onclick="requestWater()" id="waterBtn">
+                <i class="fas fa-glass-water"></i>
+            </button>
+            <button class="floating-btn bill hidden" onclick="requestBill()" id="billBtn">
+                <i class="fas fa-receipt"></i>
+            </button>
+        </div>
+
+        <!-- Order Status Bar -->
+        <div class="order-status-bar" id="orderStatusBar">
+            <div class="order-status-info">
+                <div class="order-status-icon" id="orderStatusIcon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <div class="order-status-text" id="orderStatusText">جاري تحضير طلبك</div>
+                    <div class="order-status-time" id="orderStatusTime"></div>
+                </div>
+            </div>
+            <div class="order-status-progress" id="orderStatusProgress">
+                <div class="progress-step">
+                    <div class="progress-dot active" id="step1"></div>
+                    <span class="progress-label">استلام</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-dot" id="step2"></div>
+                    <span class="progress-label">تحضير</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-dot" id="step3"></div>
+                    <span class="progress-label">جاهز</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h3><i class="fas fa-shopping-cart"></i> سلة الطلبات</h3>
+                <span class="close-cart" onclick="closeCart()">&times;</span>
+            </div>
+            
+            <div class="cart-items" id="cartItems">
+                <div style="text-align:center; color:#aaaaaa; padding:2rem;">
+                    <i class="fas fa-shopping-basket" style="font-size:3rem; margin-bottom:1rem;"></i>
+                    <p>السلة فارغة</p>
+                </div>
+            </div>
+
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>الإجمالي:</span>
+                    <span id="cartTotal">0 دينار</span>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn-primary" onclick="showConfirmModal()">إرسال الطلب</button>
+                    <button class="btn-outline" onclick="clearCart()">تفريغ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Details Page -->
+    <div id="itemDetailsPage" style="display:none;">
+        <div class="item-details-page">
+            <div class="details-header">
+                <div class="back-btn" onclick="hideItemDetails()">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <h3>تفاصيل الصنف</h3>
+            </div>
+            <div class="details-image" id="detailsImage"></div>
+            <div class="details-content">
+                <div class="details-title">
+                    <h1 class="details-name" id="detailsName"></h1>
+                    <span class="details-price" id="detailsPrice"></span>
+                </div>
+                <span class="details-category" id="detailsCategory"></span>
+                <p class="details-desc" id="detailsDesc"></p>
+                
+                <div class="details-actions">
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="changeDetailQuantity(-1)">-</button>
+                        <span class="quantity" id="detailQuantity">1</span>
+                        <button class="quantity-btn" onclick="changeDetailQuantity(1)">+</button>
+                    </div>
+                    
+                    <textarea class="notes-input" id="detailNotes" placeholder="ملاحظات (بدون بصل، زائد شطة...)" rows="3"></textarea>
+                    
+                    <button class="add-to-cart-btn" onclick="addToCartFromDetails()">
+                        <i class="fas fa-cart-plus"></i>
+                        إضافة للسلة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-content">
+            <div class="confirm-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="confirm-title">تأكيد الطلب</h2>
+            <p class="confirm-message" id="confirmMessage">هل أنت متأكد من إرسال هذا الطلب؟</p>
+            <div class="confirm-actions">
+                <button class="confirm-btn" onclick="confirmOrder()">نعم، أرسل</button>
+                <button class="cancel-btn" onclick="closeConfirmModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call Waiter Modal -->
+    <div class="modal" id="waiterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>طلب مساعدة</h3>
+                <span class="close-modal" onclick="closeModal('waiter')">&times;</span>
+            </div>
+            <p style="margin-bottom:1rem;">هل تريد استدعاء النادل؟</p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmCallWaiter()">نعم</button>
+                <button class="btn-outline" onclick="closeModal('waiter')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Water Modal -->
+    <div class="modal" id="waterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>طلب ماء</h3>
+                <span class="close-modal" onclick="closeModal('water')">&times;</span>
+            </div>
+            
+            <div class="water-options">
+                <div class="water-option" onclick="selectWaterOption('normal')" id="waterNormal">
+                    <div class="water-option-icon">
+                        <i class="fas fa-glass-water"></i>
+                    </div>
+                    <div class="water-option-info">
+                        <div class="water-option-title">ماء</div>
+                        <div class="water-option-desc">ماء معدني طبيعي</div>
+                    </div>
+                </div>
+                
+                <div class="water-option" onclick="selectWaterOption('extraGlass')" id="waterExtraGlass">
+                    <div class="water-option-icon">
+                        <i class="fas fa-cup"></i>
+                    </div>
+                    <div class="water-option-info">
+                        <div class="water-option-title">كأس إضافي</div>
+                        <div class="water-option-desc">كأس فارغ إضافي</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="water-quantity">
+                <button class="water-quantity-btn" onclick="changeWaterQuantity(-1)">-</button>
+                <span class="water-quantity-value" id="waterQuantity">1</span>
+                <button class="water-quantity-btn" onclick="changeWaterQuantity(1)">+</button>
+            </div>
+            
+            <textarea class="notes-input" id="waterNotes" placeholder="ملاحظات إضافية..." rows="2" style="margin-top:1rem;"></textarea>
+            
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmWaterOrder()">طلب</button>
+                <button class="btn-outline" onclick="closeModal('water')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill Modal -->
+    <div class="modal" id="billModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>طلب الفاتورة</h3>
+                <span class="close-modal" onclick="closeModal('bill')">&times;</span>
+            </div>
+            <p style="margin-bottom:1rem;">هل تريد طلب الفاتورة؟</p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmRequestBill()">نعم</button>
+                <button class="btn-outline" onclick="closeModal('bill')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">تمت الإضافة</span>
+    </div>
+
+    <script>
+        // ==================== State ====================
+        let currentRestaurant = null;
+        let currentItem = null;
+        let cart = [];
+        let currentOrderId = null;
+        let currentCategory = 'all';
+        let orderTimer = null;
+        let orderStep = 0;
+        let selectedWaterType = 'normal';
+
+        // ==================== Get URL Parameters ====================
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('restaurant') || 'R0023';
+        const tableId = urlParams.get('table') || '5';
+
+        document.getElementById('tableInfo').innerHTML = `
+            <i class="fas fa-chair"></i>
+            <span>طاولة ${tableId}</span>
+        `;
+
+        // ==================== Load Restaurant Data ====================
+        async function loadRestaurantData() {
+            try {
+                const data = {
+                    name: 'مطعم الذواق',
+                    categories: [
+                        { id: 1, name: 'مقبلات', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=200' },
+                        { id: 2, name: 'أطباق رئيسية', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200' },
+                        { id: 3, name: 'مشروبات', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200' },
+                        { id: 4, name: 'حلويات', image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200' }
+                    ],
+                    items: [
+                        { id: 1, name: 'برجر لحم', price: 15, categoryId: 2, category: 'أطباق رئيسية', desc: 'لحم بقري مع جبنة وخضار طازجة، يقدم مع بطاطا مقلية', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600' },
+                        { id: 2, name: 'بيزا', price: 12, categoryId: 2, category: 'أطباق رئيسية', desc: 'بيزا بالجبنة والزيتون والفلفل الرومي', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600' },
+                        { id: 3, name: 'سلطة', price: 8, categoryId: 1, category: 'مقبلات', desc: 'سلطة خضراء طازجة مع خس وجرجير وطماطم', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600' },
+                        { id: 4, name: 'كوكا كولا', price: 3, categoryId: 3, category: 'مشروبات', desc: 'مشروب غازي مثلج', image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=600' },
+                        { id: 5, name: 'تشيز كيك', price: 7, categoryId: 4, category: 'حلويات', desc: 'تشيز كيك بالتوت الأحمر مع صوص التوت', image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600' },
+                        { id: 6, name: 'شاورما', price: 10, categoryId: 2, category: 'أطباق رئيسية', desc: 'شاورما دجاج مع ثوم وخيار مخلل', image: 'https://images.unsplash.com/photo-1561651823-34f113022e9e?w=600' }
+                    ]
+                };
+
+                currentRestaurant = data;
+                document.getElementById('restaurantName').textContent = data.name;
+                renderStickyCategories(data.categories);
+                renderItems(data.items);
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                showError();
+            }
+        }
+
+        // ==================== Render Functions ====================
+        function renderStickyCategories(categories) {
+            const scroll = document.getElementById('categoriesScroll');
+            scroll.innerHTML = `
+                <div class="category-sticky-item ${currentCategory === 'all' ? 'active' : ''}" onclick="filterByCategory('all')">
+                    <div class="category-sticky-image" style="background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200')"></div>
+                    <div class="category-sticky-name">الكل</div>
+                </div>
+                ${categories.map(cat => `
+                    <div class="category-sticky-item" onclick="filterByCategory(${cat.id})">
+                        <div class="category-sticky-image" style="background-image: url('${cat.image}')"></div>
+                        <div class="category-sticky-name">${cat.name}</div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderItems(items) {
+            const grid = document.getElementById('itemsGrid');
+            grid.innerHTML = items.map(item => `
+                <div class="item-card" onclick="showItemDetails(${item.id})">
+                    <div class="item-image" style="background-image: url('${item.image}')">
+                        <span class="item-category-badge">${item.category}</span>
+                    </div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <span class="item-name">${item.name}</span>
+                            <span class="item-price">${item.price} د</span>
+                        </div>
+                        <p class="item-desc">${item.desc.substring(0, 50)}...</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== Filter by Category ====================
+        function filterByCategory(categoryId) {
+            currentCategory = categoryId;
+            
+            document.querySelectorAll('.category-sticky-item').forEach((item, index) => {
+                if (index === 0 && categoryId === 'all') {
+                    item.classList.add('active');
+                } else if (index > 0 && categoryId === currentRestaurant.categories[index-1]?.id) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            const filtered = categoryId === 'all' 
+                ? currentRestaurant.items 
+                : currentRestaurant.items.filter(item => item.categoryId === categoryId);
+            
+            renderItems(filtered);
+            document.getElementById('itemsGrid').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== Item Details ====================
+        function showItemDetails(itemId) {
+            const item = currentRestaurant.items.find(i => i.id === itemId);
+            if (!item) return;
+
+            currentItem = { ...item, quantity: 1, notes: '' };
+
+            document.getElementById('detailsName').textContent = item.name;
+            document.getElementById('detailsImage').style.backgroundImage = `url('${item.image}')`;
+            document.getElementById('detailsPrice').textContent = `${item.price} دينار`;
+            document.getElementById('detailsCategory').textContent = item.category;
+            document.getElementById('detailsDesc').textContent = item.desc;
+            document.getElementById('detailQuantity').textContent = '1';
+            document.getElementById('detailNotes').value = '';
+
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('itemDetailsPage').style.display = 'block';
+        }
+
+        function hideItemDetails() {
+            document.getElementById('app').style.display = 'block';
+            document.getElementById('itemDetailsPage').style.display = 'none';
+        }
+
+        function changeDetailQuantity(delta) {
+            const quantityEl = document.getElementById('detailQuantity');
+            let quantity = parseInt(quantityEl.textContent) + delta;
+            if (quantity < 1) quantity = 1;
+            quantityEl.textContent = quantity;
+        }
+
+        function addToCartFromDetails() {
+            const quantity = parseInt(document.getElementById('detailQuantity').textContent);
+            const notes = document.getElementById('detailNotes').value;
+            
+            const cartItem = {
+                id: currentItem.id,
+                name: currentItem.name,
+                price: currentItem.price,
+                quantity: quantity,
+                notes: notes,
+                image: currentItem.image
+            };
+
+            const existingIndex = cart.findIndex(item => item.id === cartItem.id && item.notes === cartItem.notes);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push(cartItem);
+            }
+
+            updateCartUI();
+            hideItemDetails();
+            showToast('تمت الإضافة للسلة');
+        }
+
+        // ==================== Cart Functions ====================
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+
+            const cartItemsEl = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                cartItemsEl.innerHTML = `
+                    <div style="text-align:center; color:#aaaaaa; padding:2rem;">
+                        <i class="fas fa-shopping-basket" style="font-size:3rem; margin-bottom:1rem;"></i>
+                        <p>السلة فارغة</p>
+                    </div>
+                `;
+                document.getElementById('cartTotal').textContent = '0 دينار';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price} دينار × ${item.quantity}</div>
+                            ${item.notes ? `<div class="cart-item-notes">ملاحظة: ${item.notes}</div>` : ''}
+                        </div>
+                        <div class="cart-item-actions">
+                            <button onclick="updateCartItem(${index}, -1)"><i class="fas fa-minus"></i></button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateCartItem(${index}, 1)"><i class="fas fa-plus"></i></button>
+                            <button onclick="removeCartItem(${index})" style="background:#442222;"><i class="fas fa-trash" style="color:#ff6b6b;"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItemsEl.innerHTML = html;
+            document.getElementById('cartTotal').textContent = `${total} دينار`;
+        }
+
+        function updateCartItem(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity < 1) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCartUI();
+            showToast('تم تفريغ السلة');
+        }
+
+        function openCart() {
+            document.getElementById('cartSidebar').classList.add('open');
+        }
+
+        function closeCart() {
+            document.getElementById('cartSidebar').classList.remove('open');
+        }
+
+        // ==================== Order Functions ====================
+        function showConfirmModal() {
+            if (cart.length === 0) {
+                showToast('السلة فارغة', 'error');
+                return;
+            }
+            document.getElementById('confirmMessage').textContent = `هل أنت متأكد من إرسال طلب بقيمة ${document.getElementById('cartTotal').textContent}؟`;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        function confirmOrder() {
+            currentOrderId = 'ORD' + Math.floor(Math.random() * 1000);
+            
+            closeCart();
+            closeConfirmModal();
+            
+            showBill();
+            startOrderTracking();
+            
+            showToast('تم إرسال الطلب بنجاح');
+            
+            cart = [];
+            updateCartUI();
+        }
+
+        function showBill() {
+            const billSection = document.getElementById('billSection');
+            const billItems = document.getElementById('billItems');
+            const billTotal = document.getElementById('billTotal');
+            
+            let html = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                html += `
+                    <div class="bill-item">
+                        <span>${item.name} x${item.quantity}</span>
+                        <span>${itemTotal} د</span>
+                    </div>
+                `;
+            });
+            
+            billItems.innerHTML = html;
+            billTotal.innerHTML = `<span>الإجمالي</span> <span>${total} د</span>`;
+            document.getElementById('billOrderId').textContent = currentOrderId;
+            
+            billSection.style.display = 'block';
+        }
+
+        // ==================== Order Status Tracking ====================
+        function startOrderTracking() {
+            orderStep = 0;
+            document.getElementById('orderStatusBar').classList.add('show');
+            
+            hideBillButton();
+            
+            updateOrderStatus();
+            
+            orderTimer = setInterval(() => {
+                if (orderStep < 3) {
+                    orderStep++;
+                    updateOrderStatus();
+                    
+                    if (orderStep === 2) {
+                        showBillButton();
+                    }
+                } else {
+                    clearInterval(orderTimer);
+                }
+            }, 10000);
+        }
+
+        function updateOrderStatus() {
+            const statusText = document.getElementById('orderStatusText');
+            const statusIcon = document.getElementById('orderStatusIcon');
+            const timeEl = document.getElementById('orderStatusTime');
+            
+            const steps = ['تم استلام الطلب', 'جاري التحضير', 'الطلب جاهز'];
+            const icons = ['fa-check', 'fa-fire', 'fa-utensils'];
+            const colors = ['#10b981', '#f59e0b', '#d48c2c'];
+            
+            if (orderStep < 3) {
+                statusText.textContent = steps[orderStep];
+                statusIcon.innerHTML = `<i class="fas ${icons[orderStep]}"></i>`;
+                statusIcon.style.background = orderStep === 0 ? '#1e3a2e' : orderStep === 1 ? '#4a3a1e' : '#2d2d2d';
+                statusIcon.style.color = colors[orderStep];
+                
+                for (let i = 1; i <= 3; i++) {
+                    const step = document.getElementById(`step${i}`);
+                    if (i <= orderStep + 1) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else {
+                        step.classList.remove('completed', 'active');
+                    }
+                }
+                
+                const times = ['منذ دقيقة', 'منذ 3 دقائق', 'منذ 5 دقائق'];
+                timeEl.textContent = times[orderStep];
+            }
+        }
+
+        // ==================== Bill Button Control ====================
+        function showBillButton() {
+            const billBtn = document.getElementById('billBtn');
+            billBtn.classList.remove('hidden');
+        }
+
+        function hideBillButton() {
+            const billBtn = document.getElementById('billBtn');
+            billBtn.classList.add('hidden');
+        }
+
+        // ==================== Waiter Functions ====================
+        function callWaiter() {
+            document.getElementById('waiterModal').classList.add('active');
+        }
+
+        function confirmCallWaiter() {
+            showToast('تم استدعاء النادل');
+            closeModal('waiter');
+        }
+
+        // ==================== Water Functions ====================
+        function requestWater() {
+            document.getElementById('waterQuantity').textContent = '1';
+            document.getElementById('waterNotes').value = '';
+            selectWaterOption('normal');
+            document.getElementById('waterModal').classList.add('active');
+        }
+
+        function selectWaterOption(type) {
+            selectedWaterType = type;
+            
+            document.querySelectorAll('.water-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.getElementById(`water${type.charAt(0).toUpperCase() + type.slice(1)}`).classList.add('selected');
+        }
+
+        function changeWaterQuantity(delta) {
+            const quantityEl = document.getElementById('waterQuantity');
+            let quantity = parseInt(quantityEl.textContent) + delta;
+            if (quantity < 1) quantity = 1;
+            quantityEl.textContent = quantity;
+        }
+
+        function confirmWaterOrder() {
+            const quantity = parseInt(document.getElementById('waterQuantity').textContent);
+            const notes = document.getElementById('waterNotes').value;
+            
+            let waterTypeText = '';
+            switch(selectedWaterType) {
+                case 'normal':
+                    waterTypeText = 'ماء';
+                    break;
+                case 'extraGlass':
+                    waterTypeText = 'كأس إضافي';
+                    break;
+            }
+            
+            showToast(`تم طلب ${waterTypeText} (${quantity})`);
+            closeModal('water');
+        }
+
+        // ==================== Bill Functions ====================
+        function requestBill() {
+            document.getElementById('billModal').classList.add('active');
+        }
+
+        function confirmRequestBill() {
+            showToast('تم طلب الفاتورة');
+            closeModal('bill');
+        }
+
+        // ==================== Modal Functions ====================
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+        }
+
+        // ==================== Toast ====================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.style.borderRightColor = type === 'success' ? '#10b981' : '#ef4444';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==================== Error Handling ====================
+        function showError() {
+            document.getElementById('itemsGrid').innerHTML = `
+                <div style="text-align:center; padding:3rem; grid-column:1/-1;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#ef4444; margin-bottom:1rem;"></i>
+                    <p style="color: #ffffff;">عذراً، حدث خطأ في تحميل المنيو</p>
+                </div>
+            `;
+        }
+
+        // ==================== Initialize ====================
+        document.addEventListener('DOMContentLoaded', loadRestaurantData);
+    </script>
+</body>
+</html>
